@@ -93,7 +93,7 @@ namespace RandomGameLauncher {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/RandomGameLauncher;V1.0.0.0;component/tageditorwindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/RandomGameLauncher;component/tageditorwindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\TagEditorWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

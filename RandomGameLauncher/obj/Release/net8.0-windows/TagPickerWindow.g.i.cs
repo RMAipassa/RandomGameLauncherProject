@@ -85,7 +85,7 @@ namespace RandomGameLauncher {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/RandomGameLauncher;V1.0.0.0;component/tagpickerwindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/RandomGameLauncher;component/tagpickerwindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\TagPickerWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

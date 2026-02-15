@@ -16,6 +16,11 @@ public sealed class Config
 
     public bool IncludeSteam { get; set; } = true;
     public bool IncludeEpic { get; set; } = true;
+    public bool IncludeGog { get; set; } = true;
+    public bool IncludeRiot { get; set; } = true;
+    public bool IncludeAmazon { get; set; } = true;
+    public bool IncludeXbox { get; set; } = true;
+    public bool IncludeUbisoft { get; set; } = true;
 
     public bool StartMinimizedToTray { get; set; }
     public bool MinimizeToTray { get; set; } = true;

@@ -90,6 +90,41 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         set { _includeEpic = value; SaveConfig(); RefreshLibrary(); OnPropertyChanged(); }
     }
 
+    bool _includeGog = true;
+    public bool IncludeGog
+    {
+        get => _includeGog;
+        set { _includeGog = value; SaveConfig(); RefreshLibrary(); OnPropertyChanged(); }
+    }
+
+    bool _includeRiot = true;
+    public bool IncludeRiot
+    {
+        get => _includeRiot;
+        set { _includeRiot = value; SaveConfig(); RefreshLibrary(); OnPropertyChanged(); }
+    }
+
+    bool _includeAmazon = true;
+    public bool IncludeAmazon
+    {
+        get => _includeAmazon;
+        set { _includeAmazon = value; SaveConfig(); RefreshLibrary(); OnPropertyChanged(); }
+    }
+
+    bool _includeXbox = true;
+    public bool IncludeXbox
+    {
+        get => _includeXbox;
+        set { _includeXbox = value; SaveConfig(); RefreshLibrary(); OnPropertyChanged(); }
+    }
+
+    bool _includeUbisoft = true;
+    public bool IncludeUbisoft
+    {
+        get => _includeUbisoft;
+        set { _includeUbisoft = value; SaveConfig(); RefreshLibrary(); OnPropertyChanged(); }
+    }
+
     bool _favoritesOnly;
     public bool FavoritesOnly
     {
@@ -154,6 +189,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         _includeSteam = _cfg.IncludeSteam;
         _includeEpic = _cfg.IncludeEpic;
+        _includeGog = _cfg.IncludeGog;
+        _includeRiot = _cfg.IncludeRiot;
+        _includeAmazon = _cfg.IncludeAmazon;
+        _includeXbox = _cfg.IncludeXbox;
+        _includeUbisoft = _cfg.IncludeUbisoft;
         _favoritesOnly = _cfg.FavoritesOnly;
         _usePlaytimeWeighting = _cfg.UsePlaytimeWeighting;
         _steamId64 = _cfg.SteamId64;
@@ -320,6 +360,18 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var list = new List<GameEntry>();
         if (IncludeSteam) list.AddRange(SteamScanner.Scan());
         if (IncludeEpic) list.AddRange(EpicScanner.Scan());
+        if (IncludeGog) list.AddRange(GogScanner.Scan());
+        if (IncludeRiot) list.AddRange(RiotScanner.Scan());
+        if (IncludeAmazon) list.AddRange(AmazonScanner.Scan());
+        if (IncludeXbox) list.AddRange(XboxScanner.Scan());
+        if (IncludeUbisoft) list.AddRange(UbisoftScanner.Scan());
+
+        list = list
+            .GroupBy(g => g.Key, StringComparer.OrdinalIgnoreCase)
+            .Select(g => g.First())
+            .OrderBy(g => g.Name, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(g => g.Platform, StringComparer.OrdinalIgnoreCase)
+            .ToList();
 
         foreach (var g in list)
         {
@@ -361,8 +413,41 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             if (pick.Platform == "steam")
                 Process.Start(new ProcessStartInfo($"steam://rungameid/{pick.Id}") { UseShellExecute = true });
-            else
+            else if (pick.Platform == "epic")
                 Process.Start(new ProcessStartInfo($"com.epicgames.launcher://apps/{pick.Id}?action=launch&silent=true") { UseShellExecute = true });
+            else if (pick.Platform == "gog")
+            {
+                var target = GogScanner.TryGetLaunchTarget(pick.Id);
+                if (string.IsNullOrWhiteSpace(target)) throw new InvalidOperationException("Could not determine GOG launch target");
+
+                Process.Start(new ProcessStartInfo(target) { UseShellExecute = true });
+            }
+            else if (pick.Platform == "riot")
+            {
+                if (!RiotScanner.TryGetLaunchCommand(pick.Id, out var exe, out var args))
+                    throw new InvalidOperationException("Could not determine Riot launch command");
+
+                Process.Start(new ProcessStartInfo(exe) { Arguments = args, UseShellExecute = true });
+            }
+            else if (pick.Platform == "amazon")
+            {
+                var uri = AmazonScanner.TryGetLaunchTarget(pick.Id);
+                if (string.IsNullOrWhiteSpace(uri)) throw new InvalidOperationException("Could not determine Amazon launch URI");
+                Process.Start(new ProcessStartInfo(uri) { UseShellExecute = true });
+            }
+            else if (pick.Platform == "xbox")
+            {
+                if (!XboxScanner.TryGetLaunchTarget(pick.Id, out var exe, out var args))
+                    throw new InvalidOperationException("Could not determine Xbox launch target");
+                Process.Start(new ProcessStartInfo(exe) { Arguments = args, UseShellExecute = true });
+            }
+            else if (pick.Platform == "ubisoft")
+            {
+                var uri = UbisoftScanner.GetLaunchUri(pick.Id);
+                Process.Start(new ProcessStartInfo(uri) { UseShellExecute = true });
+            }
+            else
+                throw new InvalidOperationException($"Unknown platform: {pick.Platform}");
 
             var he = HistoryService.AddLaunch(_cfg, pick, filterTags, TagFilterMatchAll, launched: true, error: "");
             SaveConfig();
@@ -442,6 +527,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _cfg.SteamId64 = SteamId64;
         _cfg.IncludeSteam = IncludeSteam;
         _cfg.IncludeEpic = IncludeEpic;
+        _cfg.IncludeGog = IncludeGog;
+        _cfg.IncludeRiot = IncludeRiot;
+        _cfg.IncludeAmazon = IncludeAmazon;
+        _cfg.IncludeXbox = IncludeXbox;
+        _cfg.IncludeUbisoft = IncludeUbisoft;
         _cfg.Theme = Theme;
         _cfg.Backdrop = Backdrop;
         ConfigService.Save(_cfg);

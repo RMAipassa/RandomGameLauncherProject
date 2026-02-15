@@ -37,6 +37,11 @@
 
                         <CheckBox Content="Steam" Margin="16,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IncludeSteam}" />
                         <CheckBox Content="Epic" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IncludeEpic}" />
+                        <CheckBox Content="GOG" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IncludeGog}" />
+                        <CheckBox Content="Riot" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IncludeRiot}" />
+                        <CheckBox Content="Amazon" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IncludeAmazon}" />
+                        <CheckBox Content="Xbox" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IncludeXbox}" />
+                        <CheckBox Content="Ubisoft" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IncludeUbisoft}" />
 
                         <Separator Margin="14,0,14,0" Width="1" />
 
@@ -80,7 +85,7 @@
                         <DataGridCheckBoxColumn Header="Include" Binding="{Binding Included, Mode=TwoWay}" Width="80"/>
                         <DataGridCheckBoxColumn Header="★" Binding="{Binding Favorite, Mode=TwoWay}" Width="50"/>
                         <DataGridTextColumn Header="Game" Binding="{Binding Name}" Width="*"/>
-                        <DataGridTextColumn Header="Platform" Binding="{Binding Platform}" Width="90"/>
+                        <DataGridTextColumn Header="Platform" Binding="{Binding PlatformLabel}" Width="90"/>
                         <DataGridTextColumn Header="Playtime (hrs)" Binding="{Binding DisplayPlaytimeHours}" Width="120"/>
                         <DataGridTextColumn Header="Install Location" Binding="{Binding InstallPath}" Width="340"/>
                         <DataGridTextColumn Header="Tags" Binding="{Binding AllTagsText}" Width="220"/>

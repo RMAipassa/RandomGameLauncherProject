@@ -83,6 +83,8 @@ public sealed class GameEntry : INotifyPropertyChanged
 
     public string Key => $"{Platform}:{Id}";
 
+    public string PlatformLabel => (Platform ?? "").ToUpperInvariant();
+
     public event PropertyChangedEventHandler? PropertyChanged;
     void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
