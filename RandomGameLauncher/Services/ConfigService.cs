@@ -35,6 +35,12 @@ public sealed class Config
     public BackdropKind Backdrop { get; set; } = BackdropKind.Mica;
 
     public Dictionary<string, long> TrackedPlaytimeSeconds { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    public Dictionary<string, List<string>> TagsByGameKey { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    public Dictionary<string, List<string>> AutoTagsByGameKey { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    public Dictionary<string, double> SteamPlaytimeHoursByGameKey { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 }
 
 public static class ConfigService
@@ -58,12 +64,32 @@ public static class ConfigService
         {
             if (!File.Exists(ConfigPath)) return new Config();
             var json = File.ReadAllText(ConfigPath, Encoding.UTF8);
-            return JsonSerializer.Deserialize<Config>(json, Options) ?? new Config();
+            var cfg = JsonSerializer.Deserialize<Config>(json, Options) ?? new Config();
+            Normalize(cfg);
+            return cfg;
         }
         catch
         {
             return new Config();
         }
+    }
+
+    static void Normalize(Config cfg)
+    {
+        cfg.Excluded ??= new HashSet<string>();
+        cfg.Favorites ??= new HashSet<string>();
+
+        cfg.TrackedPlaytimeSeconds ??= new Dictionary<string, long>();
+        cfg.TrackedPlaytimeSeconds = new Dictionary<string, long>(cfg.TrackedPlaytimeSeconds, StringComparer.OrdinalIgnoreCase);
+
+        cfg.TagsByGameKey ??= new Dictionary<string, List<string>>();
+        cfg.TagsByGameKey = new Dictionary<string, List<string>>(cfg.TagsByGameKey, StringComparer.OrdinalIgnoreCase);
+
+        cfg.AutoTagsByGameKey ??= new Dictionary<string, List<string>>();
+        cfg.AutoTagsByGameKey = new Dictionary<string, List<string>>(cfg.AutoTagsByGameKey, StringComparer.OrdinalIgnoreCase);
+
+        cfg.SteamPlaytimeHoursByGameKey ??= new Dictionary<string, double>();
+        cfg.SteamPlaytimeHoursByGameKey = new Dictionary<string, double>(cfg.SteamPlaytimeHoursByGameKey, StringComparer.OrdinalIgnoreCase);
     }
 
     public static void Save(Config cfg)

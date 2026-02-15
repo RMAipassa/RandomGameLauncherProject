@@ -29,6 +29,12 @@
                         <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <TextBox x:Name="SearchBox" Width="260" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
 
+                        <TextBlock Text="Tags:" VerticalAlignment="Center" Margin="12,0,8,0" Foreground="{DynamicResource App.SubtleTextBrush}" />
+                        <Button Content="Choose..." Padding="10,6" Click="ChooseTagFilter_Click" />
+                        <Button Content="Clear" Margin="8,0,0,0" Padding="10,6" Click="ClearTagFilter_Click" IsEnabled="{Binding HasTagFilter}" />
+                        <TextBlock Text="{Binding SelectedTagFilterText}" Margin="10,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource App.SubtleTextBrush}" />
+                        <CheckBox Content="All" Margin="8,0,0,0" VerticalAlignment="Center" IsChecked="{Binding TagFilterMatchAll}" />
+
                         <CheckBox Content="Steam" Margin="16,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IncludeSteam}" />
                         <CheckBox Content="Epic" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IncludeEpic}" />
 
@@ -40,6 +46,7 @@
 
                         <Button Content="Refresh" Margin="14,0,0,0" Padding="14,6" Command="{Binding RefreshCommand}" />
                         <Button Content="Fetch Playtime" Margin="10,0,0,0" Padding="14,6" Command="{Binding FetchPlaytimeCommand}" />
+                        <Button Content="Import Steam tags" Margin="10,0,0,0" Padding="14,6" Click="ImportSteamTags_Click" IsEnabled="{Binding CanImportSteamTags}" />
 
                         <StackPanel Orientation="Horizontal" Margin="14,0,0,0" VerticalAlignment="Center">
                             <TextBlock Text="SteamID64" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource App.SubtleTextBrush}"/>
@@ -56,10 +63,18 @@
                 </DockPanel>
 
                 <DataGrid Margin="0,12,0,0"
+                          x:Name="GamesGrid"
                           ItemsSource="{Binding ViewAll}"
                           AutoGenerateColumns="False"
                           CanUserSortColumns="True"
-                          IsReadOnly="False">
+                          IsReadOnly="False"
+                          PreviewMouseRightButtonDown="GamesGrid_PreviewMouseRightButtonDown">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Edit tags..." Click="EditTags_Click" />
+                            <MenuItem Header="Clear tags" Click="ClearTags_Click" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
                     <DataGrid.Columns>
                         <DataGridCheckBoxColumn Header="Include" Binding="{Binding Included, Mode=TwoWay}" Width="80"/>
                         <DataGridCheckBoxColumn Header="★" Binding="{Binding Favorite, Mode=TwoWay}" Width="50"/>
@@ -67,6 +82,7 @@
                         <DataGridTextColumn Header="Platform" Binding="{Binding Platform}" Width="90"/>
                         <DataGridTextColumn Header="Playtime (hrs)" Binding="{Binding DisplayPlaytimeHours}" Width="120"/>
                         <DataGridTextColumn Header="Install Location" Binding="{Binding InstallPath}" Width="340"/>
+                        <DataGridTextColumn Header="Tags" Binding="{Binding AllTagsText}" Width="220"/>
                     </DataGrid.Columns>
                 </DataGrid>
 

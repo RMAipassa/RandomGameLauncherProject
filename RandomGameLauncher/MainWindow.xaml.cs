@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using RandomGameLauncher.Models;
 using RandomGameLauncher.Services;
 
@@ -22,6 +23,28 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     string _searchText = "";
     public string SearchText { get => _searchText; set { _searchText = value; RefreshViews(); OnPropertyChanged(); } }
+
+    string _tagFilterText = "";
+    public string TagFilterText
+    {
+        get => _tagFilterText;
+        set { _tagFilterText = value; RefreshViews(); OnPropertyChanged(); }
+    }
+
+    List<string> _selectedTagFilter = new();
+    public string SelectedTagFilterText => _selectedTagFilter.Count == 0 ? "" : string.Join(", ", _selectedTagFilter);
+
+    public bool HasTagFilter => _selectedTagFilter.Count > 0;
+
+    bool _tagFilterMatchAll;
+    public bool TagFilterMatchAll
+    {
+        get => _tagFilterMatchAll;
+        set { _tagFilterMatchAll = value; RefreshViews(); OnPropertyChanged(); }
+    }
+
+    bool _isImportingSteamTags;
+    public bool CanImportSteamTags => !_isImportingSteamTags;
 
     AppTheme _theme = AppTheme.System;
     public AppTheme Theme
@@ -225,6 +248,26 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (!string.IsNullOrWhiteSpace(SearchText) &&
             !g.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
             return false;
+
+        var tags = _selectedTagFilter.Count > 0 ? _selectedTagFilter : TagService.NormalizeTags(TagFilterText);
+        if (tags.Count > 0)
+        {
+            var have = g.AllTags;
+            if (TagFilterMatchAll)
+            {
+                foreach (var t in tags)
+                    if (!have.Contains(t, StringComparer.OrdinalIgnoreCase))
+                        return false;
+            }
+            else
+            {
+                var any = false;
+                foreach (var t in tags)
+                    if (have.Contains(t, StringComparer.OrdinalIgnoreCase)) { any = true; break; }
+                if (!any) return false;
+            }
+        }
+
         return true;
     }
 
@@ -272,6 +315,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             ApplyConfigToGame(g);
             _playtime.SeedFromConfig(g);
+            g.Tags = TagService.GetTags(_cfg, g);
+            g.AutoTags = TagService.GetAutoTags(_cfg, g);
+
+            if (g.Platform == "steam" && _cfg.SteamPlaytimeHoursByGameKey.TryGetValue(g.Key, out var h) && h > 0)
+                g.PlaytimeHours = h;
+
             _games.Add(g);
         }
 
@@ -284,7 +333,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var pool = _games
             .Where(g => g.Included)
-            .Where(g => !FavoritesOnly || g.Favorite)
+            .Where(g => FilterCore(g))
             .ToList();
 
         var pick = WeightedPicker.Pick(pool, UsePlaytimeWeighting);
@@ -337,8 +386,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var map = await SteamPlaytimeService.FetchPlaytimeHoursAsync(apiKey, SteamId64);
             foreach (var g in _games.Where(x => x.Platform == "steam"))
             {
-                if (map.TryGetValue(g.Id, out var hrs)) g.PlaytimeHours = hrs;
+                if (map.TryGetValue(g.Id, out var hrs))
+                {
+                    g.PlaytimeHours = hrs;
+                    _cfg.SteamPlaytimeHoursByGameKey[g.Key] = hrs;
+                }
             }
+            SaveConfig();
             StatusText = "Steam playtime updated";
         }
         catch (Exception ex)
@@ -377,6 +431,147 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         SaveConfig();
         StatusText = "API key saved";
         ApiKeyBox.Password = "";
+    }
+
+    void EditTags_Click(object sender, RoutedEventArgs e)
+    {
+        var g = GamesGrid.SelectedItem as GameEntry;
+        if (g is null) return;
+
+        var known = GetKnownTags();
+        var dlg = new TagEditorWindow(g.Name, known, g.Tags, Theme, Backdrop)
+        {
+            Owner = this
+        };
+
+        if (dlg.ShowDialog() == true)
+        {
+            TagService.SetTags(_cfg, g, dlg.Tags);
+            SaveConfig();
+            RefreshViews();
+        }
+    }
+
+    void ClearTags_Click(object sender, RoutedEventArgs e)
+    {
+        var g = GamesGrid.SelectedItem as GameEntry;
+        if (g is null) return;
+
+        TagService.SetTags(_cfg, g, Array.Empty<string>());
+        SaveConfig();
+        RefreshViews();
+    }
+
+    void ChooseTagFilter_Click(object sender, RoutedEventArgs e)
+    {
+        var known = GetKnownTags();
+        var dlg = new TagPickerWindow(known, _selectedTagFilter, TagFilterMatchAll, Theme, Backdrop)
+        {
+            Owner = this
+        };
+
+        if (dlg.ShowDialog() == true)
+        {
+            _selectedTagFilter = dlg.Tags.ToList();
+            _tagFilterMatchAll = dlg.MatchAll;
+            RefreshViews();
+            OnPropertyChanged(nameof(SelectedTagFilterText));
+            OnPropertyChanged(nameof(HasTagFilter));
+            OnPropertyChanged(nameof(TagFilterMatchAll));
+        }
+    }
+
+    void ClearTagFilter_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedTagFilter.Count == 0) return;
+        _selectedTagFilter.Clear();
+        RefreshViews();
+        OnPropertyChanged(nameof(SelectedTagFilterText));
+        OnPropertyChanged(nameof(HasTagFilter));
+    }
+
+    IReadOnlyList<string> GetKnownTags()
+    {
+        var all = new List<string>();
+
+        foreach (var kv in _cfg.TagsByGameKey)
+            all.AddRange(kv.Value ?? new List<string>());
+        foreach (var kv in _cfg.AutoTagsByGameKey)
+            all.AddRange(kv.Value ?? new List<string>());
+
+        foreach (var g in _games)
+            all.AddRange(g.AllTags);
+
+        return TagService.NormalizeTags(string.Join(',', all));
+    }
+
+    async void ImportSteamTags_Click(object sender, RoutedEventArgs e)
+    {
+        if (_isImportingSteamTags) return;
+
+        _isImportingSteamTags = true;
+        OnPropertyChanged(nameof(CanImportSteamTags));
+
+        try
+        {
+            var steam = _games.Where(g => g.Platform == "steam").ToList();
+            if (steam.Count == 0)
+            {
+                StatusText = "No Steam games loaded";
+                return;
+            }
+
+            StatusText = "Importing Steam tags...";
+
+            var sem = new SemaphoreSlim(6);
+            int done = 0;
+
+            var tasks = steam.Select(async g =>
+            {
+                await sem.WaitAsync();
+                try
+                {
+                    var tags = await SteamStoreTagService.FetchStoreTagsAndGenresAsync(g.Id);
+                    if (tags.Count > 0)
+                        TagService.SetAutoTags(_cfg, g, tags);
+                }
+                catch
+                {
+                    // ignore per-game errors
+                }
+                finally
+                {
+                    var d = Interlocked.Increment(ref done);
+                    if (d % 10 == 0 || d == steam.Count)
+                        Dispatcher.Invoke(() => StatusText = $"Importing Steam tags... {d}/{steam.Count}");
+                    sem.Release();
+                }
+            }).ToList();
+
+            await Task.WhenAll(tasks);
+            SaveConfig();
+            RefreshViews();
+            StatusText = "Steam tags imported";
+        }
+        finally
+        {
+            _isImportingSteamTags = false;
+            OnPropertyChanged(nameof(CanImportSteamTags));
+        }
+    }
+
+    void GamesGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        var dep = e.OriginalSource as DependencyObject;
+        while (dep is not null)
+        {
+            if (dep is System.Windows.Controls.DataGridRow row)
+            {
+                row.IsSelected = true;
+                break;
+            }
+            dep = VisualTreeHelper.GetParent(dep);
+        }
     }
 
     void DetectSteamId_Click(object sender, RoutedEventArgs e)

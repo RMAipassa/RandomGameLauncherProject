@@ -10,11 +10,11 @@ none
 false
 TRACE;RELEASE;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\App.xaml
-4-1873547121
+61745759168
 
-13-546900673
+17565135567
 207-446641458
-MainWindow.xaml;Themes\Theme.Dark.xaml;Themes\Theme.Light.xaml;Themes\Theme.Shared.xaml;
+MainWindow.xaml;TagEditorWindow.xaml;TagPickerWindow.xaml;Themes\Theme.Dark.xaml;Themes\Theme.Light.xaml;Themes\Theme.Shared.xaml;
 
 False
 

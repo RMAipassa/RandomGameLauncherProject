@@ -1,6 +1,9 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace RandomGameLauncher.Models;
 
 public sealed class GameEntry : INotifyPropertyChanged
@@ -39,7 +42,44 @@ public sealed class GameEntry : INotifyPropertyChanged
         set { _trackedPlaytimeHours = value; OnPropertyChanged(); OnPropertyChanged(nameof(DisplayPlaytimeHours)); }
     }
 
-    public double? DisplayPlaytimeHours => PlaytimeHours ?? TrackedPlaytimeHours;
+    public double DisplayPlaytimeHours => PlaytimeHours ?? TrackedPlaytimeHours ?? 0.0;
+
+    IReadOnlyList<string> _tags = Array.Empty<string>();
+    public IReadOnlyList<string> Tags
+    {
+        get => _tags;
+        set
+        {
+            _tags = value ?? Array.Empty<string>();
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(TagsText));
+            OnPropertyChanged(nameof(AllTags));
+            OnPropertyChanged(nameof(AllTagsText));
+        }
+    }
+
+    public string TagsText => _tags.Count == 0 ? "" : string.Join(", ", _tags);
+
+    IReadOnlyList<string> _autoTags = Array.Empty<string>();
+    public IReadOnlyList<string> AutoTags
+    {
+        get => _autoTags;
+        set
+        {
+            _autoTags = value ?? Array.Empty<string>();
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(AllTags));
+            OnPropertyChanged(nameof(AllTagsText));
+        }
+    }
+
+    public IReadOnlyList<string> AllTags => _tags.Concat(_autoTags)
+        .Where(t => !string.IsNullOrWhiteSpace(t))
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(t => t, StringComparer.OrdinalIgnoreCase)
+        .ToArray();
+
+    public string AllTagsText => AllTags.Count == 0 ? "" : string.Join(", ", AllTags);
 
     public string Key => $"{Platform}:{Id}";
 

@@ -19,6 +19,10 @@
     <Color x:Key="App.DataGridRowAltColor">#0FFFFFFF</Color>
     <Color x:Key="App.DataGridHeaderBgColor">#14000000</Color>
 
+    <Color x:Key="App.ScrollbarThumbColor">#66FFFFFF</Color>
+    <Color x:Key="App.ScrollbarThumbHoverColor">#80FFFFFF</Color>
+    <Color x:Key="App.ScrollbarThumbDragColor">#99FFFFFF</Color>
+
     <SolidColorBrush x:Key="App.WindowBackgroundBrush" Color="{StaticResource App.WindowBackgroundColor}" />
     <SolidColorBrush x:Key="App.SurfaceBrush" Color="{StaticResource App.SurfaceColor}" />
     <SolidColorBrush x:Key="App.SurfaceElevatedBrush" Color="{StaticResource App.SurfaceElevatedColor}" />
@@ -36,4 +40,8 @@
 
     <SolidColorBrush x:Key="App.DataGridAlternatingRowBrush" Color="{StaticResource App.DataGridRowAltColor}" />
     <SolidColorBrush x:Key="App.DataGridHeaderBackgroundBrush" Color="{StaticResource App.DataGridHeaderBgColor}" />
+
+    <SolidColorBrush x:Key="App.ScrollbarThumbBrush" Color="{StaticResource App.ScrollbarThumbColor}" />
+    <SolidColorBrush x:Key="App.ScrollbarThumbHoverBrush" Color="{StaticResource App.ScrollbarThumbHoverColor}" />
+    <SolidColorBrush x:Key="App.ScrollbarThumbDragBrush" Color="{StaticResource App.ScrollbarThumbDragColor}" />
 </ResourceDictionary>

@@ -43,3 +43,7 @@ C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Debug\net8
 C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Debug\net8.0-windows\RandomGameLauncher.pdb
 C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Debug\net8.0-windows\RandomGameLauncher.genruntimeconfig.cache
 C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Debug\net8.0-windows\ref\RandomGameLauncher.dll
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Debug\net8.0-windows\TagEditorWindow.baml
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Debug\net8.0-windows\TagEditorWindow.g.cs
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Debug\net8.0-windows\TagPickerWindow.baml
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Debug\net8.0-windows\TagPickerWindow.g.cs
