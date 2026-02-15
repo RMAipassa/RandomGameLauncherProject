@@ -15,15 +15,40 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     readonly ObservableCollection<GameEntry> _games = new();
 
     readonly ICollectionView _viewAll;
-    readonly ICollectionView _viewSteam;
-    readonly ICollectionView _viewEpic;
-    readonly ICollectionView _viewFavorites;
 
     readonly Config _cfg;
     TrayService? _tray;
 
     string _searchText = "";
     public string SearchText { get => _searchText; set { _searchText = value; RefreshViews(); OnPropertyChanged(); } }
+
+    AppTheme _theme = AppTheme.System;
+    public AppTheme Theme
+    {
+        get => _theme;
+        set
+        {
+            if (_theme == value) return;
+            _theme = value;
+            SaveConfig();
+            _ = ThemeManager.ApplyAsync(this, RootGrid, Theme, Backdrop, animate: true);
+            OnPropertyChanged();
+        }
+    }
+
+    BackdropKind _backdrop = BackdropKind.Mica;
+    public BackdropKind Backdrop
+    {
+        get => _backdrop;
+        set
+        {
+            if (_backdrop == value) return;
+            _backdrop = value;
+            SaveConfig();
+            _ = ThemeManager.ApplyAsync(this, RootGrid, Theme, Backdrop, animate: true);
+            OnPropertyChanged();
+        }
+    }
 
     bool _includeSteam = true;
     public bool IncludeSteam
@@ -43,7 +68,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public bool FavoritesOnly
     {
         get => _favoritesOnly;
-        set { _favoritesOnly = value; _tray?.UpdateFavoritesOnlyChecked(value); SaveConfig(); OnPropertyChanged(); }
+        set { _favoritesOnly = value; _tray?.UpdateFavoritesOnlyChecked(value); SaveConfig(); RefreshViews(); OnPropertyChanged(); }
     }
 
     bool _usePlaytimeWeighting;
@@ -77,12 +102,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     string _statusText = "Ready";
     public string StatusText { get => _statusText; set { _statusText = value; OnPropertyChanged(); } }
 
-    int _selectedTabIndex;
-    public int SelectedTabIndex
-    {
-        get => _selectedTabIndex;
-        set { _selectedTabIndex = value; SaveConfig(); OnPropertyChanged(); }
-    }
 
     public ICommand RefreshCommand { get; }
     public ICommand LaunchRandomCommand { get; }
@@ -90,9 +109,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public ICommand FocusSearchCommand { get; }
 
     public ICollectionView ViewAll => _viewAll;
-    public ICollectionView ViewSteam => _viewSteam;
-    public ICollectionView ViewEpic => _viewEpic;
-    public ICollectionView ViewFavorites => _viewFavorites;
 
     public MainWindow()
     {
@@ -108,7 +124,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _steamId64 = _cfg.SteamId64;
         _startMinimizedToTray = _cfg.StartMinimizedToTray;
         _minimizeToTray = _cfg.MinimizeToTray;
-        _selectedTabIndex = _cfg.LastTabIndex;
+        _theme = _cfg.Theme;
+        _backdrop = _cfg.Backdrop;
+
+        ThemeCombo.ItemsSource = Enum.GetValues<AppTheme>();
+        BackdropCombo.ItemsSource = Enum.GetValues<BackdropKind>();
+
+        ThemeManager.Initialize();
+        _ = ThemeManager.ApplyAsync(this, RootGrid, Theme, Backdrop, animate: false);
+        SourceInitialized += async (_, _) => await ThemeManager.ApplyAsync(this, RootGrid, Theme, Backdrop, animate: false);
 
         RefreshCommand = new RelayCommand(_ => RefreshLibrary());
         LaunchRandomCommand = new RelayCommand(_ => LaunchRandom());
@@ -116,14 +140,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         FocusSearchCommand = new RelayCommand(_ => SearchBox.Focus());
 
         _viewAll = CollectionViewSource.GetDefaultView(_games);
-        _viewSteam = new ListCollectionView(_games);
-        _viewEpic = new ListCollectionView(_games);
-        _viewFavorites = new ListCollectionView(_games);
-
         _viewAll.Filter = _ => FilterAll(_ as GameEntry);
-        _viewSteam.Filter = _ => FilterSteam(_ as GameEntry);
-        _viewEpic.Filter = _ => FilterEpic(_ as GameEntry);
-        _viewFavorites.Filter = _ => FilterFavorites(_ as GameEntry);
 
         RestoreWindowPlacement();
 
@@ -202,6 +219,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     bool FilterCore(GameEntry? g)
     {
         if (g is null) return false;
+        if (FavoritesOnly && !g.Favorite) return false;
         if (!string.IsNullOrWhiteSpace(SearchText) &&
             !g.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
             return false;
@@ -210,18 +228,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     bool FilterAll(GameEntry? g) => FilterCore(g);
 
-    bool FilterSteam(GameEntry? g) => FilterCore(g) && g!.Platform == "steam";
-
-    bool FilterEpic(GameEntry? g) => FilterCore(g) && g!.Platform == "epic";
-
-    bool FilterFavorites(GameEntry? g) => FilterCore(g) && g!.Favorite;
-
     void RefreshViews()
     {
         _viewAll.Refresh();
-        _viewSteam.Refresh();
-        _viewEpic.Refresh();
-        _viewFavorites.Refresh();
     }
 
     void ApplyConfigToGame(GameEntry g)
@@ -329,9 +338,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _cfg.StartMinimizedToTray = StartMinimizedToTray;
         _cfg.MinimizeToTray = MinimizeToTray;
         _cfg.SteamId64 = SteamId64;
-        _cfg.LastTabIndex = SelectedTabIndex;
         _cfg.IncludeSteam = IncludeSteam;
         _cfg.IncludeEpic = IncludeEpic;
+        _cfg.Theme = Theme;
+        _cfg.Backdrop = Backdrop;
         ConfigService.Save(_cfg);
     }
 
@@ -355,6 +365,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
 }
 
 public sealed class RelayCommand : ICommand

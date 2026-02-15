@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ruben\\Downloads\\RandomGameLauncher_ADVANCED\\RandomGameLauncher\\RandomGameLauncher.csproj": {}
+    "C:\\Personal projects\\RandomGameLauncherProject\\RandomGameLauncher\\RandomGameLauncher.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ruben\\Downloads\\RandomGameLauncher_ADVANCED\\RandomGameLauncher\\RandomGameLauncher.csproj": {
+    "C:\\Personal projects\\RandomGameLauncherProject\\RandomGameLauncher\\RandomGameLauncher.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ruben\\Downloads\\RandomGameLauncher_ADVANCED\\RandomGameLauncher\\RandomGameLauncher.csproj",
+        "projectUniqueName": "C:\\Personal projects\\RandomGameLauncherProject\\RandomGameLauncher\\RandomGameLauncher.csproj",
         "projectName": "RandomGameLauncher",
-        "projectPath": "C:\\Users\\ruben\\Downloads\\RandomGameLauncher_ADVANCED\\RandomGameLauncher\\RandomGameLauncher.csproj",
+        "projectPath": "C:\\Personal projects\\RandomGameLauncherProject\\RandomGameLauncher\\RandomGameLauncher.csproj",
         "packagesPath": "C:\\Users\\ruben\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ruben\\Downloads\\RandomGameLauncher_ADVANCED\\RandomGameLauncher\\obj\\",
+        "outputPath": "C:\\Personal projects\\RandomGameLauncherProject\\RandomGameLauncher\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ruben\\AppData\\Roaming\\NuGet\\NuGet.Config",

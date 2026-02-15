@@ -10,37 +10,54 @@
         <KeyBinding Key="F" Modifiers="Control" Command="{Binding FocusSearchCommand}" />
     </Window.InputBindings>
 
-    <DockPanel Margin="10">
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center">
-            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,8,0"/>
-            <TextBox x:Name="SearchBox" Width="260" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+    <Grid x:Name="RootGrid" Margin="12">
+        <Border Background="{DynamicResource App.WindowBackgroundBrush}"
+                BorderBrush="{DynamicResource App.BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="{StaticResource App.CornerRadius.L}"
+                Padding="12">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top" LastChildFill="True">
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Theme" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="{DynamicResource App.SubtleTextBrush}" />
+                        <ComboBox x:Name="ThemeCombo" Width="110" SelectedItem="{Binding Theme}" />
+                        <TextBlock Text="Backdrop" Margin="14,0,8,0" VerticalAlignment="Center" Foreground="{DynamicResource App.SubtleTextBrush}" />
+                        <ComboBox x:Name="BackdropCombo" Width="110" SelectedItem="{Binding Backdrop}" />
+                    </StackPanel>
 
-            <CheckBox Content="Steam" Margin="16,0,0,0" IsChecked="{Binding IncludeSteam}" />
-            <CheckBox Content="Epic" Margin="10,0,0,0" IsChecked="{Binding IncludeEpic}" />
+                    <WrapPanel VerticalAlignment="Center">
+                        <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox x:Name="SearchBox" Width="260" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
 
-            <Separator Margin="14,0,14,0" Width="1" />
+                        <CheckBox Content="Steam" Margin="16,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IncludeSteam}" />
+                        <CheckBox Content="Epic" Margin="10,0,0,0" VerticalAlignment="Center" IsChecked="{Binding IncludeEpic}" />
 
-            <ToggleButton Content="Favorites Only" IsChecked="{Binding FavoritesOnly}" />
+                        <Separator Margin="14,0,14,0" Width="1" />
 
-            <CheckBox Content="Weight by Steam playtime" Margin="14,0,0,0" IsChecked="{Binding UsePlaytimeWeighting}" />
+                        <ToggleButton Content="Favorites Only" IsChecked="{Binding FavoritesOnly}" />
 
-            <Button Content="Refresh" Margin="14,0,0,0" Padding="14,6" Command="{Binding RefreshCommand}" />
-            <Button Content="Fetch Playtime" Margin="10,0,0,0" Padding="14,6" Command="{Binding FetchPlaytimeCommand}" />
+                        <CheckBox Content="Weight by Steam playtime" Margin="14,0,0,0" VerticalAlignment="Center" IsChecked="{Binding UsePlaytimeWeighting}" />
 
-            <StackPanel Orientation="Horizontal" Margin="14,0,0,0" VerticalAlignment="Center">
-                <TextBlock Text="SteamID64" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                <TextBox Width="140" Text="{Binding SteamId64}" />
-                <TextBlock Text="API key" VerticalAlignment="Center" Margin="10,0,6,0"/>
-                <PasswordBox Width="150" x:Name="ApiKeyBox"/>
-                <Button Content="Save" Margin="10,0,0,0" Padding="10,6" Click="SaveApiKey_Click"/>
-            </StackPanel>
+                        <Button Content="Refresh" Margin="14,0,0,0" Padding="14,6" Command="{Binding RefreshCommand}" />
+                        <Button Content="Fetch Playtime" Margin="10,0,0,0" Padding="14,6" Command="{Binding FetchPlaytimeCommand}" />
 
-            <Button Content="Launch Random (Ctrl+R)" Margin="14,0,0,0" Padding="14,6" Command="{Binding LaunchRandomCommand}"/>
-        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="14,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="SteamID64" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource App.SubtleTextBrush}"/>
+                            <TextBox Width="140" Text="{Binding SteamId64}" />
+                            <TextBlock Text="API key" VerticalAlignment="Center" Margin="10,0,6,0" Foreground="{DynamicResource App.SubtleTextBrush}"/>
+                            <PasswordBox Width="150" x:Name="ApiKeyBox"/>
+                            <Button Content="Save" Margin="10,0,0,0" Padding="10,6" Click="SaveApiKey_Click"/>
+                        </StackPanel>
 
-        <TabControl Margin="0,10,0,0" SelectedIndex="{Binding SelectedTabIndex}">
-            <TabItem Header="All">
-                <DataGrid ItemsSource="{Binding ViewAll}" AutoGenerateColumns="False" CanUserSortColumns="True" IsReadOnly="False">
+                        <Button Content="Launch Random (Ctrl+R)" Margin="14,0,0,0" Padding="14,6" Command="{Binding LaunchRandomCommand}"/>
+                    </WrapPanel>
+                </DockPanel>
+
+                <DataGrid Margin="0,12,0,0"
+                          ItemsSource="{Binding ViewAll}"
+                          AutoGenerateColumns="False"
+                          CanUserSortColumns="True"
+                          IsReadOnly="False">
                     <DataGrid.Columns>
                         <DataGridCheckBoxColumn Header="Include" Binding="{Binding Included, Mode=TwoWay}" Width="80"/>
                         <DataGridCheckBoxColumn Header="★" Binding="{Binding Favorite, Mode=TwoWay}" Width="50"/>
@@ -50,53 +67,22 @@
                         <DataGridTextColumn Header="Install Location" Binding="{Binding InstallPath}" Width="340"/>
                     </DataGrid.Columns>
                 </DataGrid>
-            </TabItem>
 
-            <TabItem Header="Steam">
-                <DataGrid ItemsSource="{Binding ViewSteam}" AutoGenerateColumns="False" CanUserSortColumns="True" IsReadOnly="False">
-                    <DataGrid.Columns>
-                        <DataGridCheckBoxColumn Header="Include" Binding="{Binding Included, Mode=TwoWay}" Width="80"/>
-                        <DataGridCheckBoxColumn Header="★" Binding="{Binding Favorite, Mode=TwoWay}" Width="50"/>
-                        <DataGridTextColumn Header="Game" Binding="{Binding Name}" Width="*"/>
-                        <DataGridTextColumn Header="Playtime (hrs)" Binding="{Binding PlaytimeHours}" Width="120"/>
-                        <DataGridTextColumn Header="Install Location" Binding="{Binding InstallPath}" Width="440"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </TabItem>
+                <StatusBar DockPanel.Dock="Bottom" Margin="0,12,0,0">
+                    <StatusBarItem Content="{Binding StatusText}" />
+                    <StatusBarItem HorizontalAlignment="Right">
+                        <CheckBox Content="Start minimized to tray" IsChecked="{Binding StartMinimizedToTray}" />
+                    </StatusBarItem>
+                    <StatusBarItem HorizontalAlignment="Right">
+                        <CheckBox Content="Minimize to tray" IsChecked="{Binding MinimizeToTray}" />
+                    </StatusBarItem>
+                </StatusBar>
+            </DockPanel>
+        </Border>
 
-            <TabItem Header="Epic">
-                <DataGrid ItemsSource="{Binding ViewEpic}" AutoGenerateColumns="False" CanUserSortColumns="True" IsReadOnly="False">
-                    <DataGrid.Columns>
-                        <DataGridCheckBoxColumn Header="Include" Binding="{Binding Included, Mode=TwoWay}" Width="80"/>
-                        <DataGridCheckBoxColumn Header="★" Binding="{Binding Favorite, Mode=TwoWay}" Width="50"/>
-                        <DataGridTextColumn Header="Game" Binding="{Binding Name}" Width="*"/>
-                        <DataGridTextColumn Header="Install Location" Binding="{Binding InstallPath}" Width="560"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </TabItem>
-
-            <TabItem Header="Favorites">
-                <DataGrid ItemsSource="{Binding ViewFavorites}" AutoGenerateColumns="False" CanUserSortColumns="True" IsReadOnly="False">
-                    <DataGrid.Columns>
-                        <DataGridCheckBoxColumn Header="Include" Binding="{Binding Included, Mode=TwoWay}" Width="80"/>
-                        <DataGridCheckBoxColumn Header="★" Binding="{Binding Favorite, Mode=TwoWay}" Width="50"/>
-                        <DataGridTextColumn Header="Game" Binding="{Binding Name}" Width="*"/>
-                        <DataGridTextColumn Header="Platform" Binding="{Binding Platform}" Width="90"/>
-                        <DataGridTextColumn Header="Playtime (hrs)" Binding="{Binding PlaytimeHours}" Width="120"/>
-                        <DataGridTextColumn Header="Install Location" Binding="{Binding InstallPath}" Width="340"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </TabItem>
-        </TabControl>
-
-        <StatusBar DockPanel.Dock="Bottom" Margin="0,10,0,0">
-            <StatusBarItem Content="{Binding StatusText}" />
-            <StatusBarItem HorizontalAlignment="Right">
-                <CheckBox Content="Start minimized to tray" IsChecked="{Binding StartMinimizedToTray}" />
-            </StatusBarItem>
-            <StatusBarItem HorizontalAlignment="Right">
-                <CheckBox Content="Minimize to tray" IsChecked="{Binding MinimizeToTray}" />
-            </StatusBarItem>
-        </StatusBar>
-    </DockPanel>
+        <Image x:Name="ThemeTransitionOverlay"
+               Visibility="Collapsed"
+               IsHitTestVisible="False"
+               Stretch="Fill" />
+    </Grid>
 </Window>

@@ -30,6 +30,9 @@ public sealed class Config
     public double WindowWidth { get; set; } = 980;
     public double WindowHeight { get; set; } = 650;
     public string WindowState { get; set; } = "Normal";
+
+    public AppTheme Theme { get; set; } = AppTheme.System;
+    public BackdropKind Backdrop { get; set; } = BackdropKind.Mica;
 }
 
 public static class ConfigService
@@ -43,7 +46,8 @@ public static class ConfigService
     static readonly JsonSerializerOptions Options = new()
     {
         WriteIndented = true,
-        NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
+        NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
+        Converters = { new JsonStringEnumConverter() }
     };
 
     public static Config Load()

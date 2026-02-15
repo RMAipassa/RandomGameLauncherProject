@@ -18,3 +18,28 @@ C:\Users\ruben\Downloads\RandomGameLauncher_ADVANCED\RandomGameLauncher\obj\Rele
 C:\Users\ruben\Downloads\RandomGameLauncher_ADVANCED\RandomGameLauncher\obj\Release\net8.0-windows\RandomGameLauncher.pdb
 C:\Users\ruben\Downloads\RandomGameLauncher_ADVANCED\RandomGameLauncher\obj\Release\net8.0-windows\RandomGameLauncher.genruntimeconfig.cache
 C:\Users\ruben\Downloads\RandomGameLauncher_ADVANCED\RandomGameLauncher\obj\Release\net8.0-windows\ref\RandomGameLauncher.dll
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\bin\Release\net8.0-windows\Assets\dice.ico
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\bin\Release\net8.0-windows\RandomGameLauncher.exe
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\bin\Release\net8.0-windows\RandomGameLauncher.deps.json
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\bin\Release\net8.0-windows\RandomGameLauncher.runtimeconfig.json
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\bin\Release\net8.0-windows\RandomGameLauncher.dll
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\bin\Release\net8.0-windows\RandomGameLauncher.pdb
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\MainWindow.baml
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\Themes\Theme.Dark.baml
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\Themes\Theme.Light.baml
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\Themes\Theme.Shared.baml
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\App.baml
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\MainWindow.g.cs
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\App.g.cs
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\RandomGameLauncher_MarkupCompile.cache
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\RandomGameLauncher.g.resources
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\RandomGameLauncher.GeneratedMSBuildEditorConfig.editorconfig
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\RandomGameLauncher.AssemblyInfoInputs.cache
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\RandomGameLauncher.AssemblyInfo.cs
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\RandomGameLauncher.csproj.CoreCompileInputs.cache
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\RandomGameLauncher.sourcelink.json
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\RandomGameLauncher.dll
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\refint\RandomGameLauncher.dll
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\RandomGameLauncher.pdb
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\RandomGameLauncher.genruntimeconfig.cache
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\ref\RandomGameLauncher.dll

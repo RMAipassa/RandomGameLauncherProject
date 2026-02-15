@@ -1,0 +1,39 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="App.WindowBackgroundColor">#CCF6F7F9</Color>
+    <Color x:Key="App.SurfaceColor">#E6FFFFFF</Color>
+    <Color x:Key="App.SurfaceElevatedColor">#F2FFFFFF</Color>
+
+    <Color x:Key="App.TextColor">#FF101114</Color>
+    <Color x:Key="App.SubtleTextColor">#FF5A5D66</Color>
+
+    <Color x:Key="App.BorderColor">#26000000</Color>
+    <Color x:Key="App.DividerColor">#14000000</Color>
+
+    <Color x:Key="App.ControlBgColor">#B3FFFFFF</Color>
+    <Color x:Key="App.ControlHoverBgColor">#E6FFFFFF</Color>
+    <Color x:Key="App.ControlPressedBgColor">#FFFFFFFF</Color>
+    <Color x:Key="App.ControlDisabledBgColor">#66FFFFFF</Color>
+
+    <Color x:Key="App.DataGridRowAltColor">#0D000000</Color>
+    <Color x:Key="App.DataGridHeaderBgColor">#0F000000</Color>
+
+    <SolidColorBrush x:Key="App.WindowBackgroundBrush" Color="{StaticResource App.WindowBackgroundColor}" />
+    <SolidColorBrush x:Key="App.SurfaceBrush" Color="{StaticResource App.SurfaceColor}" />
+    <SolidColorBrush x:Key="App.SurfaceElevatedBrush" Color="{StaticResource App.SurfaceElevatedColor}" />
+
+    <SolidColorBrush x:Key="App.TextBrush" Color="{StaticResource App.TextColor}" />
+    <SolidColorBrush x:Key="App.SubtleTextBrush" Color="{StaticResource App.SubtleTextColor}" />
+
+    <SolidColorBrush x:Key="App.BorderBrush" Color="{StaticResource App.BorderColor}" />
+    <SolidColorBrush x:Key="App.DividerBrush" Color="{StaticResource App.DividerColor}" />
+
+    <SolidColorBrush x:Key="App.ControlBackgroundBrush" Color="{StaticResource App.ControlBgColor}" />
+    <SolidColorBrush x:Key="App.ControlHoverBackgroundBrush" Color="{StaticResource App.ControlHoverBgColor}" />
+    <SolidColorBrush x:Key="App.ControlPressedBackgroundBrush" Color="{StaticResource App.ControlPressedBgColor}" />
+    <SolidColorBrush x:Key="App.ControlDisabledBackgroundBrush" Color="{StaticResource App.ControlDisabledBgColor}" />
+
+    <SolidColorBrush x:Key="App.DataGridAlternatingRowBrush" Color="{StaticResource App.DataGridRowAltColor}" />
+    <SolidColorBrush x:Key="App.DataGridHeaderBackgroundBrush" Color="{StaticResource App.DataGridHeaderBgColor}" />
+</ResourceDictionary>

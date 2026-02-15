@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RandomGameLauncher")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+47880c8e2869c75a426c5ebfc1ef4a5ea7393280")]
 [assembly: System.Reflection.AssemblyProductAttribute("RandomGameLauncher")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RandomGameLauncher")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
