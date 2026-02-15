@@ -21,6 +21,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     TrayService? _tray;
     readonly PlaytimeTracker _playtime;
 
+    HistoryWindow? _history;
+
     string _searchText = "";
     public string SearchText { get => _searchText; set { _searchText = value; RefreshViews(); OnPropertyChanged(); } }
 
@@ -141,6 +143,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         _cfg = ConfigService.Load();
         _playtime = new PlaytimeTracker(_cfg, SaveConfig, s => StatusText = s);
+        _playtime.SessionCommitted += (id, sec) =>
+        {
+            var e = _cfg.LaunchHistory.FirstOrDefault(x => x.Id == id);
+            if (e is null) return;
+            e.SessionSeconds = Math.Max(e.SessionSeconds, sec);
+            SaveConfig();
+            Dispatcher.Invoke(() => _history?.ReloadFromExternal());
+        };
 
         _includeSteam = _cfg.IncludeSteam;
         _includeEpic = _cfg.IncludeEpic;
@@ -345,6 +355,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         StatusText = $"Launching: {pick.Name} ({pick.Platform})";
 
+        var filterTags = _selectedTagFilter.Count > 0 ? _selectedTagFilter : TagService.NormalizeTags(TagFilterText).ToList();
+
         try
         {
             if (pick.Platform == "steam")
@@ -352,12 +364,32 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             else
                 Process.Start(new ProcessStartInfo($"com.epicgames.launcher://apps/{pick.Id}?action=launch&silent=true") { UseShellExecute = true });
 
-            _playtime.Start(pick);
+            var he = HistoryService.AddLaunch(_cfg, pick, filterTags, TagFilterMatchAll, launched: true, error: "");
+            SaveConfig();
+            _playtime.Start(pick, he.Id);
         }
         catch (Exception ex)
         {
+            HistoryService.AddLaunch(_cfg, pick, filterTags, TagFilterMatchAll, launched: false, error: ex.Message);
+            SaveConfig();
             StatusText = ex.Message;
         }
+    }
+
+    void OpenHistory_Click(object sender, RoutedEventArgs e)
+    {
+        if (_history is not null)
+        {
+            _history.Activate();
+            return;
+        }
+
+        _history = new HistoryWindow(_cfg, SaveConfig, Theme, Backdrop)
+        {
+            Owner = this
+        };
+        _history.Closed += (_, _) => _history = null;
+        _history.Show();
     }
 
     async Task FetchPlaytimeAsync()

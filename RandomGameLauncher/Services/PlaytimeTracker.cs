@@ -13,6 +13,7 @@ public sealed class PlaytimeTracker
     readonly Action<string> _status;
 
     GameEntry? _current;
+    Guid _historyId;
     DateTime _startedUtc;
     DateTime _lastSeenUtc;
     bool _confirmed;
@@ -20,6 +21,8 @@ public sealed class PlaytimeTracker
     static readonly TimeSpan Tick = TimeSpan.FromSeconds(2);
     static readonly TimeSpan StopAfterGone = TimeSpan.FromSeconds(20);
     static readonly TimeSpan GiveUpIfNeverSeen = TimeSpan.FromMinutes(2);
+
+    public event Action<Guid, long>? SessionCommitted;
 
     public PlaytimeTracker(Config cfg, Action saveConfig, Action<string> setStatus)
     {
@@ -40,11 +43,12 @@ public sealed class PlaytimeTracker
             g.TrackedPlaytimeHours = Math.Round(sec / 3600.0, 1);
     }
 
-    public void Start(GameEntry g)
+    public void Start(GameEntry g, Guid historyId)
     {
         Stop(commit: false);
 
         _current = g;
+        _historyId = historyId;
         _startedUtc = DateTime.UtcNow;
         _lastSeenUtc = _startedUtc;
         _confirmed = false;
@@ -61,6 +65,7 @@ public sealed class PlaytimeTracker
         _current = null;
         _timer.Stop();
 
+        var historyId = _historyId;
         if (!commit) return;
 
         var elapsed = DateTime.UtcNow - started;
@@ -74,6 +79,7 @@ public sealed class PlaytimeTracker
         _save();
 
         g.TrackedPlaytimeHours = Math.Round(_cfg.TrackedPlaytimeSeconds[g.Key] / 3600.0, 1);
+        SessionCommitted?.Invoke(historyId, add);
     }
 
     void OnTick()

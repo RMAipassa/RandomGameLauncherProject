@@ -41,6 +41,8 @@ public sealed class Config
     public Dictionary<string, List<string>> AutoTagsByGameKey { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     public Dictionary<string, double> SteamPlaytimeHoursByGameKey { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    public List<LaunchHistoryEntry> LaunchHistory { get; set; } = new();
 }
 
 public static class ConfigService
@@ -90,6 +92,8 @@ public static class ConfigService
 
         cfg.SteamPlaytimeHoursByGameKey ??= new Dictionary<string, double>();
         cfg.SteamPlaytimeHoursByGameKey = new Dictionary<string, double>(cfg.SteamPlaytimeHoursByGameKey, StringComparer.OrdinalIgnoreCase);
+
+        cfg.LaunchHistory ??= new List<LaunchHistoryEntry>();
     }
 
     public static void Save(Config cfg)

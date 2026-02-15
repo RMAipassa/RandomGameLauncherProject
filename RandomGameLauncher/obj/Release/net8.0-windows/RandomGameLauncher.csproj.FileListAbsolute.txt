@@ -47,3 +47,5 @@ C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\ne
 C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\TagEditorWindow.g.cs
 C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\TagPickerWindow.baml
 C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\TagPickerWindow.g.cs
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\HistoryWindow.baml
+C:\Personal projects\RandomGameLauncherProject\RandomGameLauncher\obj\Release\net8.0-windows\HistoryWindow.g.cs
