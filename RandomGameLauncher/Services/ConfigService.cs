@@ -33,6 +33,8 @@ public sealed class Config
 
     public AppTheme Theme { get; set; } = AppTheme.System;
     public BackdropKind Backdrop { get; set; } = BackdropKind.Mica;
+
+    public Dictionary<string, long> TrackedPlaytimeSeconds { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 }
 
 public static class ConfigService

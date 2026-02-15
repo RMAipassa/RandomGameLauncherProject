@@ -15,7 +15,7 @@ public static class WeightedPicker
         for (int i = 0; i < items.Count; i++)
         {
             var g = items[i];
-            var hours = g.Platform == "steam" ? (g.PlaytimeHours ?? 0) : 0;
+            var hours = g.DisplayPlaytimeHours ?? 0;
             var w = Math.Sqrt(hours + 1.0);
             if (w <= 0) w = 1;
             weights[i] = w;

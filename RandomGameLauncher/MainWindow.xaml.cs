@@ -18,6 +18,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     readonly Config _cfg;
     TrayService? _tray;
+    readonly PlaytimeTracker _playtime;
 
     string _searchText = "";
     public string SearchText { get => _searchText; set { _searchText = value; RefreshViews(); OnPropertyChanged(); } }
@@ -116,6 +117,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         DataContext = this;
 
         _cfg = ConfigService.Load();
+        _playtime = new PlaytimeTracker(_cfg, SaveConfig, s => StatusText = s);
 
         _includeSteam = _cfg.IncludeSteam;
         _includeEpic = _cfg.IncludeEpic;
@@ -269,6 +271,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         foreach (var g in list)
         {
             ApplyConfigToGame(g);
+            _playtime.SeedFromConfig(g);
             _games.Add(g);
         }
 
@@ -299,6 +302,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 Process.Start(new ProcessStartInfo($"steam://rungameid/{pick.Id}") { UseShellExecute = true });
             else
                 Process.Start(new ProcessStartInfo($"com.epicgames.launcher://apps/{pick.Id}?action=launch&silent=true") { UseShellExecute = true });
+
+            _playtime.Start(pick);
         }
         catch (Exception ex)
         {
@@ -309,9 +314,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     async Task FetchPlaytimeAsync()
     {
         var apiKey = ConfigService.Unprotect(_cfg.SteamApiKeyProtected);
+
+        if (string.IsNullOrWhiteSpace(SteamId64))
+        {
+            var detected = SteamUserService.TryGetSteamId64FromLocalClient();
+            if (!string.IsNullOrWhiteSpace(detected))
+            {
+                SteamId64 = detected;
+                OnPropertyChanged(nameof(SteamId64));
+            }
+        }
+
         if (string.IsNullOrWhiteSpace(apiKey) || string.IsNullOrWhiteSpace(SteamId64))
         {
-            StatusText = "Enter SteamID64 and API key, then Save";
+            StatusText = "Missing SteamID64 and/or API key (use Detect, then Save key)";
             return;
         }
 
@@ -347,6 +363,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     protected override void OnClosing(CancelEventArgs e)
     {
+        _playtime.Stop(commit: true);
         SaveWindowPlacement();
         SaveConfig();
         _tray?.Dispose();
@@ -360,6 +377,31 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         SaveConfig();
         StatusText = "API key saved";
         ApiKeyBox.Password = "";
+    }
+
+    void DetectSteamId_Click(object sender, RoutedEventArgs e)
+    {
+        var detected = SteamUserService.TryGetSteamId64FromLocalClient();
+        if (string.IsNullOrWhiteSpace(detected))
+        {
+            StatusText = "Could not detect SteamID64 (is Steam installed and logged in?)";
+            return;
+        }
+
+        SteamId64 = detected;
+        StatusText = "Detected SteamID64";
+    }
+
+    void GetApiKey_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo("https://steamcommunity.com/dev/apikey") { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            StatusText = ex.Message;
+        }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -31,7 +31,7 @@
               "RelativeDocumentMoniker": "..\\..\\Users\\ruben\\AppData\\Local\\Temp\\.vsdbgsrc\\aad6be2495d0a786b94b3514a5b6903407fe2d6a75ad7e505df6a9d895927867\\XamlReader.cs",
               "ToolTip": "C:\\Users\\ruben\\AppData\\Local\\Temp\\.vsdbgsrc\\aad6be2495d0a786b94b3514a5b6903407fe2d6a75ad7e505df6a9d895927867\\XamlReader.cs",
               "RelativeToolTip": "..\\..\\Users\\ruben\\AppData\\Local\\Temp\\.vsdbgsrc\\aad6be2495d0a786b94b3514a5b6903407fe2d6a75ad7e505df6a9d895927867\\XamlReader.cs",
-              "ViewState": "AgIAAJgBAAAAAAAAAAAcwLUBAAACAAAAAQAAAA==",
+              "ViewState": "AgIAABACAAAAAAAAAAAcwLUBAAACAAAAAQAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-15T13:42:29.954Z",
               "EditorCaption": ""
@@ -45,8 +45,7 @@
               "ToolTip": "C:\\Personal projects\\RandomGameLauncherProject\\RandomGameLauncher\\MainWindow.xaml",
               "RelativeToolTip": "RandomGameLauncher\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-02-15T13:38:51.207Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-15T13:38:51.207Z"
             },
             {
               "$type": "Document",

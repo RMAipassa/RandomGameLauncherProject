@@ -29,8 +29,17 @@ public sealed class GameEntry : INotifyPropertyChanged
     public double? PlaytimeHours
     {
         get => _playtimeHours;
-        set { _playtimeHours = value; OnPropertyChanged(); }
+        set { _playtimeHours = value; OnPropertyChanged(); OnPropertyChanged(nameof(DisplayPlaytimeHours)); }
     }
+
+    double? _trackedPlaytimeHours;
+    public double? TrackedPlaytimeHours
+    {
+        get => _trackedPlaytimeHours;
+        set { _trackedPlaytimeHours = value; OnPropertyChanged(); OnPropertyChanged(nameof(DisplayPlaytimeHours)); }
+    }
+
+    public double? DisplayPlaytimeHours => PlaytimeHours ?? TrackedPlaytimeHours;
 
     public string Key => $"{Platform}:{Id}";
 

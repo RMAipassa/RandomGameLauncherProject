@@ -36,7 +36,7 @@
 
                         <ToggleButton Content="Favorites Only" IsChecked="{Binding FavoritesOnly}" />
 
-                        <CheckBox Content="Weight by Steam playtime" Margin="14,0,0,0" VerticalAlignment="Center" IsChecked="{Binding UsePlaytimeWeighting}" />
+                        <CheckBox Content="Weight by playtime" Margin="14,0,0,0" VerticalAlignment="Center" IsChecked="{Binding UsePlaytimeWeighting}" />
 
                         <Button Content="Refresh" Margin="14,0,0,0" Padding="14,6" Command="{Binding RefreshCommand}" />
                         <Button Content="Fetch Playtime" Margin="10,0,0,0" Padding="14,6" Command="{Binding FetchPlaytimeCommand}" />
@@ -44,9 +44,11 @@
                         <StackPanel Orientation="Horizontal" Margin="14,0,0,0" VerticalAlignment="Center">
                             <TextBlock Text="SteamID64" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource App.SubtleTextBrush}"/>
                             <TextBox Width="140" Text="{Binding SteamId64}" />
+                            <Button Content="Detect" Margin="8,0,0,0" Padding="10,6" Click="DetectSteamId_Click" />
                             <TextBlock Text="API key" VerticalAlignment="Center" Margin="10,0,6,0" Foreground="{DynamicResource App.SubtleTextBrush}"/>
                             <PasswordBox Width="150" x:Name="ApiKeyBox"/>
                             <Button Content="Save" Margin="10,0,0,0" Padding="10,6" Click="SaveApiKey_Click"/>
+                            <Button Content="Get API key" Margin="8,0,0,0" Padding="10,6" Click="GetApiKey_Click" />
                         </StackPanel>
 
                         <Button Content="Launch Random (Ctrl+R)" Margin="14,0,0,0" Padding="14,6" Command="{Binding LaunchRandomCommand}"/>
@@ -63,7 +65,7 @@
                         <DataGridCheckBoxColumn Header="★" Binding="{Binding Favorite, Mode=TwoWay}" Width="50"/>
                         <DataGridTextColumn Header="Game" Binding="{Binding Name}" Width="*"/>
                         <DataGridTextColumn Header="Platform" Binding="{Binding Platform}" Width="90"/>
-                        <DataGridTextColumn Header="Playtime (hrs)" Binding="{Binding PlaytimeHours}" Width="120"/>
+                        <DataGridTextColumn Header="Playtime (hrs)" Binding="{Binding DisplayPlaytimeHours}" Width="120"/>
                         <DataGridTextColumn Header="Install Location" Binding="{Binding InstallPath}" Width="340"/>
                     </DataGrid.Columns>
                 </DataGrid>
