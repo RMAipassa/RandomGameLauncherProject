@@ -1,0 +1,102 @@
+<Window x:Class="RandomGameLauncher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Random Game Launcher"
+        Width="980" Height="650"
+        WindowStartupLocation="CenterScreen"
+        Icon="pack://siteoforigin:,,,/Assets/dice.ico">
+    <Window.InputBindings>
+        <KeyBinding Key="R" Modifiers="Control" Command="{Binding LaunchRandomCommand}" />
+        <KeyBinding Key="F" Modifiers="Control" Command="{Binding FocusSearchCommand}" />
+    </Window.InputBindings>
+
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center">
+            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+            <TextBox x:Name="SearchBox" Width="260" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+
+            <CheckBox Content="Steam" Margin="16,0,0,0" IsChecked="{Binding IncludeSteam}" />
+            <CheckBox Content="Epic" Margin="10,0,0,0" IsChecked="{Binding IncludeEpic}" />
+
+            <Separator Margin="14,0,14,0" Width="1" />
+
+            <ToggleButton Content="Favorites Only" IsChecked="{Binding FavoritesOnly}" />
+
+            <CheckBox Content="Weight by Steam playtime" Margin="14,0,0,0" IsChecked="{Binding UsePlaytimeWeighting}" />
+
+            <Button Content="Refresh" Margin="14,0,0,0" Padding="14,6" Command="{Binding RefreshCommand}" />
+            <Button Content="Fetch Playtime" Margin="10,0,0,0" Padding="14,6" Command="{Binding FetchPlaytimeCommand}" />
+
+            <StackPanel Orientation="Horizontal" Margin="14,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="SteamID64" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBox Width="140" Text="{Binding SteamId64}" />
+                <TextBlock Text="API key" VerticalAlignment="Center" Margin="10,0,6,0"/>
+                <PasswordBox Width="150" x:Name="ApiKeyBox"/>
+                <Button Content="Save" Margin="10,0,0,0" Padding="10,6" Click="SaveApiKey_Click"/>
+            </StackPanel>
+
+            <Button Content="Launch Random (Ctrl+R)" Margin="14,0,0,0" Padding="14,6" Command="{Binding LaunchRandomCommand}"/>
+        </StackPanel>
+
+        <TabControl Margin="0,10,0,0" SelectedIndex="{Binding SelectedTabIndex}">
+            <TabItem Header="All">
+                <DataGrid ItemsSource="{Binding ViewAll}" AutoGenerateColumns="False" CanUserSortColumns="True" IsReadOnly="False">
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn Header="Include" Binding="{Binding Included, Mode=TwoWay}" Width="80"/>
+                        <DataGridCheckBoxColumn Header="★" Binding="{Binding Favorite, Mode=TwoWay}" Width="50"/>
+                        <DataGridTextColumn Header="Game" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Platform" Binding="{Binding Platform}" Width="90"/>
+                        <DataGridTextColumn Header="Playtime (hrs)" Binding="{Binding PlaytimeHours}" Width="120"/>
+                        <DataGridTextColumn Header="Install Location" Binding="{Binding InstallPath}" Width="340"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <TabItem Header="Steam">
+                <DataGrid ItemsSource="{Binding ViewSteam}" AutoGenerateColumns="False" CanUserSortColumns="True" IsReadOnly="False">
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn Header="Include" Binding="{Binding Included, Mode=TwoWay}" Width="80"/>
+                        <DataGridCheckBoxColumn Header="★" Binding="{Binding Favorite, Mode=TwoWay}" Width="50"/>
+                        <DataGridTextColumn Header="Game" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Playtime (hrs)" Binding="{Binding PlaytimeHours}" Width="120"/>
+                        <DataGridTextColumn Header="Install Location" Binding="{Binding InstallPath}" Width="440"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <TabItem Header="Epic">
+                <DataGrid ItemsSource="{Binding ViewEpic}" AutoGenerateColumns="False" CanUserSortColumns="True" IsReadOnly="False">
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn Header="Include" Binding="{Binding Included, Mode=TwoWay}" Width="80"/>
+                        <DataGridCheckBoxColumn Header="★" Binding="{Binding Favorite, Mode=TwoWay}" Width="50"/>
+                        <DataGridTextColumn Header="Game" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Install Location" Binding="{Binding InstallPath}" Width="560"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <TabItem Header="Favorites">
+                <DataGrid ItemsSource="{Binding ViewFavorites}" AutoGenerateColumns="False" CanUserSortColumns="True" IsReadOnly="False">
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn Header="Include" Binding="{Binding Included, Mode=TwoWay}" Width="80"/>
+                        <DataGridCheckBoxColumn Header="★" Binding="{Binding Favorite, Mode=TwoWay}" Width="50"/>
+                        <DataGridTextColumn Header="Game" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Platform" Binding="{Binding Platform}" Width="90"/>
+                        <DataGridTextColumn Header="Playtime (hrs)" Binding="{Binding PlaytimeHours}" Width="120"/>
+                        <DataGridTextColumn Header="Install Location" Binding="{Binding InstallPath}" Width="340"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+
+        <StatusBar DockPanel.Dock="Bottom" Margin="0,10,0,0">
+            <StatusBarItem Content="{Binding StatusText}" />
+            <StatusBarItem HorizontalAlignment="Right">
+                <CheckBox Content="Start minimized to tray" IsChecked="{Binding StartMinimizedToTray}" />
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <CheckBox Content="Minimize to tray" IsChecked="{Binding MinimizeToTray}" />
+            </StatusBarItem>
+        </StatusBar>
+    </DockPanel>
+</Window>
